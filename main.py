@@ -378,6 +378,29 @@ def tail_file(path, lines=10, follow=False):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def display_env_vars():
+    """Displays all environment variables."""
+    print("\n--- Environment Variables ---")
+    for key, value in os.environ.items():
+        print(f"{key}={value}")
+    print("-----------------------------")
+
+def set_env_var(key, value):
+    """Sets an environment variable."""
+    os.environ[key] = value
+    print(f"Environment variable '{key}' set to '{value}'.")
+
+def unset_env_var(key):
+    """Deletes an environment variable."""
+    if key in os.environ:
+        del os.environ[key]
+        print(f"Environment variable '{key}' deleted.")
+    else:
+        print(f"Error: Environment variable '{key}' not found.")
+
 def display_help():
 
     """Displays the help message."""
@@ -406,6 +429,7 @@ def display_help():
     print("  ping <host>        - Ping a host (e.g., google.com or 8.8.8.8).")
     print("  sysinfo            - Display detailed system information.")
     print("  tail [-f] [-n <lines>] <path> - Display the last lines of a file, optionally follow new lines.")
+    print("  env [list | set <key> <value> | unset <key>] - Manage environment variables.")
     print("  help               - Display this help message.")
 
 def main():
@@ -578,6 +602,29 @@ def main():
         
         path = sys.argv[path_index]
         tail_file(path, lines=num_lines, follow=follow_mode)
+    elif command == "env":
+        if len(sys.argv) < 3:
+            print("Usage: env [list | set <key> <value> | unset <key>]")
+            return
+        subcommand = sys.argv[2]
+        if subcommand == "list":
+            display_env_vars()
+        elif subcommand == "set":
+            if len(sys.argv) < 5:
+                print("Usage: env set <key> <value>")
+                return
+            key = sys.argv[3]
+            value = sys.argv[4]
+            set_env_var(key, value)
+        elif subcommand == "unset":
+            if len(sys.argv) < 4:
+                print("Usage: env unset <key>")
+                return
+            key = sys.argv[3]
+            unset_env_var(key)
+        else:
+            print(f"Unknown env subcommand: {subcommand}")
+            print("Usage: env [list | set <key> <value> | unset <key>]")
     elif command == "help":
         display_help()
     else:
