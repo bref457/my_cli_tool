@@ -4,6 +4,7 @@ import shutil
 import difflib
 import re
 import hashlib
+import psutil
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -278,6 +279,20 @@ def generate_hash(path, algorithm):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def list_processes():
+    """Lists all running processes."""
+    print("PID\tName\tCPU%\tMEM%")
+    print("--------------------------------------------------")
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+        try:
+            print(f"{proc.info['pid']}\t{proc.info['name']}\t{proc.info['cpu_percent']:.1f}\t{proc.info['memory_percent']:.1f}")
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    print("--------------------------------------------------")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -301,6 +316,7 @@ def display_help():
     print("  stat <path>        - Display metadata of a file or directory.")
     print("  grep <path> <pattern> - Search for a pattern within the content of a file.")
     print("  hash <path> <algorithm> - Generate hash (md5 or sha256) of a file.")
+    print("  ps                 - List running processes.")
     print("  help               - Display this help message.")
 
 def main():
@@ -434,6 +450,8 @@ def main():
         path = sys.argv[2]
         algorithm = sys.argv[3]
         generate_hash(path, algorithm)
+    elif command == "ps":
+        list_processes()
     elif command == "help":
         display_help()
     else:
