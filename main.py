@@ -5,6 +5,7 @@ import difflib
 import re
 import hashlib
 import psutil
+import subprocess
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -293,6 +294,27 @@ def list_processes():
             pass
     print("--------------------------------------------------")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def ping_host(host):
+    """Pings a host and displays the output."""
+    try:
+        # Use platform-specific ping command
+        if sys.platform.startswith('win'):
+            command = ['ping', '-n', '1', host] # Ping once on Windows
+        else:
+            command = ['ping', '-c', '1', host] # Ping once on Linux/macOS
+        
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print(f"Error pinging '{host}': {e.stderr}")
+    except FileNotFoundError:
+        print(f"Error: 'ping' command not found. Make sure it's in your system's PATH.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -317,6 +339,7 @@ def display_help():
     print("  grep <path> <pattern> - Search for a pattern within the content of a file.")
     print("  hash <path> <algorithm> - Generate hash (md5 or sha256) of a file.")
     print("  ps                 - List running processes.")
+    print("  ping <host>        - Ping a host (e.g., google.com or 8.8.8.8).")
     print("  help               - Display this help message.")
 
 def main():
@@ -452,6 +475,12 @@ def main():
         generate_hash(path, algorithm)
     elif command == "ps":
         list_processes()
+    elif command == "ping":
+        if len(sys.argv) < 3:
+            print("Usage: ping <host>")
+            return
+        host = sys.argv[2]
+        ping_host(host)
     elif command == "help":
         display_help()
     else:
