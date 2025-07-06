@@ -3,6 +3,7 @@ import sys
 import shutil
 import difflib
 import re
+import hashlib
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -250,6 +251,33 @@ def grep_file_content(path, pattern):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def generate_hash(path, algorithm):
+    """Generates the hash of a file using the specified algorithm (md5 or sha256)."""
+    try:
+        hasher = None
+        if algorithm == "md5":
+            hasher = hashlib.md5()
+        elif algorithm == "sha256":
+            hasher = hashlib.sha256()
+        else:
+            print(f"Error: Unsupported hash algorithm '{algorithm}'. Use 'md5' or 'sha256'.")
+            return
+
+        with open(path, 'rb') as f:
+            while True:
+                chunk = f.read(4096) # Read in chunks
+                if not chunk:
+                    break
+                hasher.update(chunk)
+        print(f"Hash of '{path}' ({algorithm}): {hasher.hexdigest()}")
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -272,6 +300,7 @@ def display_help():
     print("  diff <file1> <file2> - Compare two text files.")
     print("  stat <path>        - Display metadata of a file or directory.")
     print("  grep <path> <pattern> - Search for a pattern within the content of a file.")
+    print("  hash <path> <algorithm> - Generate hash (md5 or sha256) of a file.")
     print("  help               - Display this help message.")
 
 def main():
@@ -398,6 +427,13 @@ def main():
         path = sys.argv[2]
         pattern = sys.argv[3]
         grep_file_content(path, pattern)
+    elif command == "hash":
+        if len(sys.argv) < 4:
+            print("Usage: hash <path> <algorithm>")
+            return
+        path = sys.argv[2]
+        algorithm = sys.argv[3]
+        generate_hash(path, algorithm)
     elif command == "help":
         display_help()
     else:
