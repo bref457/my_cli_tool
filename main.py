@@ -211,6 +211,29 @@ def compare_files(file1_path, file2_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def display_metadata(path):
+    """Displays metadata of a file or directory."""
+    try:
+        stats = os.stat(path)
+        print(f"Metadata for '{path}':")
+        print(f"  Size: {stats.st_size} bytes")
+        print(f"  Last modified: {os.path.getmtime(path)}")
+        print(f"  Last accessed: {os.path.getatime(path)}")
+        print(f"  Creation time: {os.path.getctime(path)}")
+        print(f"  Mode: {oct(stats.st_mode)}")
+        print(f"  Inode: {stats.st_ino}")
+        print(f"  Device: {stats.st_dev}")
+        print(f"  Number of links: {stats.st_nlink}")
+        print(f"  Owner UID: {stats.st_uid}")
+        print(f"  Group GID: {stats.st_gid}")
+    except FileNotFoundError:
+        print(f"Error: '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -231,6 +254,7 @@ def display_help():
     print("  unzip <source> <destination> - Decompress a zip archive.")
     print("  du <path>          - Display the size of a file or directory.")
     print("  diff <file1> <file2> - Compare two text files.")
+    print("  stat <path>        - Display metadata of a file or directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -344,6 +368,12 @@ def main():
         file1_path = sys.argv[2]
         file2_path = sys.argv[3]
         compare_files(file1_path, file2_path)
+    elif command == "stat":
+        if len(sys.argv) < 3:
+            print("Usage: stat <path>")
+            return
+        path = sys.argv[2]
+        display_metadata(path)
     elif command == "help":
         display_help()
     else:
