@@ -123,6 +123,18 @@ def copy_item(source_path, destination_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def edit_file_content(path, content, append=False):
+    """Writes content to a file. Overwrites by default, appends if append is True."""
+    mode = 'a' if append else 'w'
+    try:
+        with open(path, mode) as f:
+            f.write(content + '\n')
+        print(f"Content written to '{path}' (mode: {'append' if append else 'overwrite'}).")
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -137,6 +149,7 @@ def display_help():
     print("  cat <path>         - Display the content of a file.")
     print("  find <directory> <search_term> - Search for files by name in a directory.")
     print("  cp <source> <destination> - Copy a file or directory.")
+    print("  echo [-a] <path> <content> - Write content to a file. Use -a to append.")
     print("  help               - Display this help message.")
 
 def main():
@@ -199,6 +212,23 @@ def main():
         source_path = sys.argv[2]
         destination_path = sys.argv[3]
         copy_item(source_path, destination_path)
+    elif command == "echo":
+        if len(sys.argv) < 4:
+            print("Usage: echo [-a] <path> <content>")
+            return
+        append_mode = False
+        start_index = 2
+        if sys.argv[2] == "-a":
+            append_mode = True
+            start_index = 3
+        
+        if len(sys.argv) < start_index + 2:
+            print("Usage: echo [-a] <path> <content>")
+            return
+        
+        path = sys.argv[start_index]
+        content = sys.argv[start_index + 1]
+        edit_file_content(path, content, append_mode)
     elif command == "help":
         display_help()
     else:
