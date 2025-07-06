@@ -1,6 +1,7 @@
 import os
 import sys
 import shutil
+import difflib
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -195,6 +196,21 @@ def display_size(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def compare_files(file1_path, file2_path):
+    """Compares two text files and prints the differences."""
+    try:
+        with open(file1_path, 'r') as f1, open(file2_path, 'r') as f2:
+            diff = difflib.unified_diff(f1.readlines(), f2.readlines(), fromfile=file1_path, tofile=file2_path)
+            for line in diff:
+                sys.stdout.write(line)
+    except FileNotFoundError:
+        print(f"Error: One or both files not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -214,6 +230,7 @@ def display_help():
     print("  zip <source> <output_filename> - Compress a file or directory into a zip archive.")
     print("  unzip <source> <destination> - Decompress a zip archive.")
     print("  du <path>          - Display the size of a file or directory.")
+    print("  diff <file1> <file2> - Compare two text files.")
     print("  help               - Display this help message.")
 
 def main():
@@ -320,6 +337,13 @@ def main():
             return
         path = sys.argv[2]
         display_size(path)
+    elif command == "diff":
+        if len(sys.argv) < 4:
+            print("Usage: diff <file1> <file2>")
+            return
+        file1_path = sys.argv[2]
+        file2_path = sys.argv[3]
+        compare_files(file1_path, file2_path)
     elif command == "help":
         display_help()
     else:
