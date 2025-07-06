@@ -68,6 +68,19 @@ def rename_item(old_path, new_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def display_file_content(path):
+    """Displays the content of a given file."""
+    try:
+        with open(path, 'r') as f:
+            print(f"Content of '{path}':")
+            print(f.read())
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+    except IsADirectoryError:
+        print(f"Error: '{path}' is a directory, not a file.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -78,6 +91,7 @@ def display_help():
     print("  touch <path> <name> - Create a new empty file.")
     print("  rm <path>          - Delete a file or an empty directory.")
     print("  mv <old_path> <new_path> - Rename or move a file or directory.")
+    print("  cat <path>         - Display the content of a file.")
     print("  help               - Display this help message.")
 
 def main():
@@ -117,6 +131,12 @@ def main():
         old_path = sys.argv[2]
         new_path = sys.argv[3]
         rename_item(old_path, new_path)
+    elif command == "cat":
+        if len(sys.argv) < 3:
+            print("Usage: cat <path>")
+            return
+        path = sys.argv[2]
+        display_file_content(path)
     elif command == "help":
         display_help()
     else:
