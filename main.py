@@ -178,9 +178,6 @@ def unzip_item(source_path, destination_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def display_size(path):
     """Displays the size of a file or a directory."""
     try:
@@ -202,9 +199,6 @@ def display_size(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def compare_files(file1_path, file2_path):
     """Compares two text files and prints the differences."""
     try:
@@ -214,9 +208,6 @@ def compare_files(file1_path, file2_path):
                 sys.stdout.write(line)
     except FileNotFoundError:
         print(f"Error: One or both files not found.")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
@@ -240,9 +231,6 @@ def display_metadata(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def grep_file_content(path, pattern):
     """Searches for a pattern within the content of a file."""
     try:
@@ -252,9 +240,6 @@ def grep_file_content(path, pattern):
                     print(f"{path}:{line_num}: {line.strip()}")
     except FileNotFoundError:
         print(f"Error: File '{path}' not found.")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
@@ -282,9 +267,6 @@ def generate_hash(path, algorithm):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def list_processes():
     """Lists all running processes."""
     print("PID\tName\tCPU%\tMEM%")
@@ -294,10 +276,6 @@ def list_processes():
             print(f"{proc.info['pid']}\t{proc.info['name']}\t{proc.info['cpu_percent']:.1f}\t{proc.info['memory_percent']:.1f}")
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
-    print("--------------------------------------------------")
-
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
 
 def ping_host(host):
     """Pings a host and displays the output."""
@@ -314,9 +292,6 @@ def ping_host(host):
         print(f"Error pinging '{host}': {e.stderr}")
     except FileNotFoundError:
         print(f"Error: 'ping' command not found. Make sure it's in your system's PATH.")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
@@ -349,9 +324,6 @@ def display_sysinfo():
     print(f"Bytes Received: {net_io.bytes_recv / (1024**2):.2f} MB")
     print("--------------------------")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def tail_file(path, lines=10, follow=False):
     """Displays the last N lines of a file, and optionally follows new lines."""
     try:
@@ -379,9 +351,6 @@ def tail_file(path, lines=10, follow=False):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-
 def display_env_vars():
     """Displays all environment variables."""
     print("\n--- Environment Variables ---")
@@ -401,9 +370,6 @@ def unset_env_var(key):
         print(f"Environment variable '{key}' deleted.")
     else:
         print(f"Error: Environment variable '{key}' not found.")
-
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
 
 def create_tar_gz(source_path, output_filename):
     """Compresses a file or directory into a .tar.gz archive."""
@@ -430,7 +396,6 @@ def extract_tar_gz(source_path, destination_path):
         print(f"An unexpected error occurred: {e}")
 
 def display_help():
-
     """Displays the help message."""
     print("Simple CLI File Manager")
     print("Usage: python main.py <command> [arguments]")
