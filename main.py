@@ -38,6 +38,24 @@ def create_empty_file(path, file_name):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def delete_item(path):
+    """Deletes a file or an empty directory at the specified path."""
+    try:
+        if os.path.isfile(path):
+            os.remove(path)
+            print(f"File '{path}' deleted successfully.")
+        elif os.path.isdir(path):
+            os.rmdir(path)
+            print(f"Empty directory '{path}' deleted successfully.")
+        else:
+            print(f"Error: '{path}' is neither a file nor an empty directory.")
+    except FileNotFoundError:
+        print(f"Error: '{path}' not found.")
+    except OSError as e:
+        print(f"Error deleting '{path}': {e}. Make sure the directory is empty if you are trying to delete a folder.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -46,6 +64,7 @@ def display_help():
     print("  list [path]        - List contents of a directory. Defaults to current directory.")
     print("  mkdir <path> <name> - Create a new folder.")
     print("  touch <path> <name> - Create a new empty file.")
+    print("  rm <path>          - Delete a file or an empty directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -72,6 +91,12 @@ def main():
         path = sys.argv[2]
         name = sys.argv[3]
         create_empty_file(path, name)
+    elif command == "rm":
+        if len(sys.argv) < 3:
+            print("Usage: rm <path>")
+            return
+        path = sys.argv[2]
+        delete_item(path)
     elif command == "help":
         display_help()
     else:
