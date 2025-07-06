@@ -315,6 +315,38 @@ def ping_host(host):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def display_sysinfo():
+    """Displays detailed system information (CPU, memory, disk, network)."""
+    print("\n--- System Information ---")
+    # CPU Info
+    print(f"CPU Cores: {psutil.cpu_count(logical=False)} (Physical), {psutil.cpu_count(logical=True)} (Logical)")
+    print(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
+
+    # Memory Info
+    mem = psutil.virtual_memory()
+    print(f"Total Memory: {mem.total / (1024**3):.2f} GB")
+    print(f"Available Memory: {mem.available / (1024**3):.2f} GB")
+    print(f"Used Memory: {mem.used / (1024**3):.2f} GB ({mem.percent}%) ")
+
+    # Disk Info
+    print("\n--- Disk Usage ---")
+    for part in psutil.disk_partitions():
+        try:
+            usage = psutil.disk_usage(part.mountpoint)
+            print(f"  {part.device} ({part.mountpoint}): Total={usage.total / (1024**3):.2f} GB, Used={usage.used / (1024**3):.2f} GB, Free={usage.free / (1024**3):.2f} GB ({usage.percent}%) ")
+        except Exception:
+            continue
+
+    # Network Info
+    print("\n--- Network Info ---")
+    net_io = psutil.net_io_counters()
+    print(f"Bytes Sent: {net_io.bytes_sent / (1024**2):.2f} MB")
+    print(f"Bytes Received: {net_io.bytes_recv / (1024**2):.2f} MB")
+    print("--------------------------")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -340,6 +372,7 @@ def display_help():
     print("  hash <path> <algorithm> - Generate hash (md5 or sha256) of a file.")
     print("  ps                 - List running processes.")
     print("  ping <host>        - Ping a host (e.g., google.com or 8.8.8.8).")
+    print("  sysinfo            - Display detailed system information.")
     print("  help               - Display this help message.")
 
 def main():
@@ -481,6 +514,8 @@ def main():
             return
         host = sys.argv[2]
         ping_host(host)
+    elif command == "sysinfo":
+        display_sysinfo()
     elif command == "help":
         display_help()
     else:
