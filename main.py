@@ -81,6 +81,25 @@ def display_file_content(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def find_files(directory, search_term):
+    """Recursively searches for files by name within a given directory."""
+    found_files = []
+    try:
+        for root, _, files in os.walk(directory):
+            for file in files:
+                if search_term in file:
+                    found_files.append(os.path.join(root, file))
+        if found_files:
+            print(f"Found files matching '{search_term}' in '{directory}':")
+            for f in found_files:
+                print(f"- {f}")
+        else:
+            print(f"No files matching '{search_term}' found in '{directory}'.")
+    except FileNotFoundError:
+        print(f"Error: Directory '{directory}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -92,6 +111,7 @@ def display_help():
     print("  rm <path>          - Delete a file or an empty directory.")
     print("  mv <old_path> <new_path> - Rename or move a file or directory.")
     print("  cat <path>         - Display the content of a file.")
+    print("  find <directory> <search_term> - Search for files by name in a directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -137,6 +157,13 @@ def main():
             return
         path = sys.argv[2]
         display_file_content(path)
+    elif command == "find":
+        if len(sys.argv) < 4:
+            print("Usage: find <directory> <search_term>")
+            return
+        directory = sys.argv[2]
+        search_term = sys.argv[3]
+        find_files(directory, search_term)
     elif command == "help":
         display_help()
     else:
