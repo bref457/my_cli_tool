@@ -502,7 +502,7 @@ def main():
             return
         
         path = sys.argv[start_index]
-        content = sys.argv[start_index + 1]
+        content = " ".join(sys.argv[start_index + 1:])
         edit_file_content(path, content, append_mode)
     elif command == "chmod":
         if len(sys.argv) < 4:
