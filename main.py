@@ -7,6 +7,7 @@ import hashlib
 import psutil
 import subprocess
 import time
+import tarfile
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -401,6 +402,33 @@ def unset_env_var(key):
     else:
         print(f"Error: Environment variable '{key}' not found.")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def create_tar_gz(source_path, output_filename):
+    """Compresses a file or directory into a .tar.gz archive."""
+    try:
+        with tarfile.open(output_filename, "w:gz") as tar:
+            tar.add(source_path, arcname=os.path.basename(source_path))
+        print(f"'{source_path}' compressed to '{output_filename}'.")
+    except FileNotFoundError:
+        print(f"Error: Source '{source_path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def extract_tar_gz(source_path, destination_path):
+    """Decompresses a .tar.gz archive."""
+    try:
+        with tarfile.open(source_path, "r:gz") as tar:
+            tar.extractall(path=destination_path)
+        print(f"'{source_path}' decompressed to '{destination_path}'.")
+    except FileNotFoundError:
+        print(f"Error: Archive '{source_path}' not found.")
+    except tarfile.ReadError:
+        print(f"Error: '{source_path}' is not a valid .tar.gz archive.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
 
     """Displays the help message."""
@@ -430,6 +458,8 @@ def display_help():
     print("  sysinfo            - Display detailed system information.")
     print("  tail [-f] [-n <lines>] <path> - Display the last lines of a file, optionally follow new lines.")
     print("  env [list | set <key> <value> | unset <key>] - Manage environment variables.")
+    print("  tar.gz <source> <output_filename> - Compress a file or directory into a .tar.gz archive.")
+    print("  untar.gz <source> <destination> - Decompress a .tar.gz archive.")
     print("  help               - Display this help message.")
 
 def main():
@@ -625,6 +655,20 @@ def main():
         else:
             print(f"Unknown env subcommand: {subcommand}")
             print("Usage: env [list | set <key> <value> | unset <key>]")
+    elif command == "tar.gz":
+        if len(sys.argv) < 4:
+            print("Usage: tar.gz <source> <output_filename>")
+            return
+        source_path = sys.argv[2]
+        output_filename = sys.argv[3]
+        create_tar_gz(source_path, output_filename)
+    elif command == "untar.gz":
+        if len(sys.argv) < 4:
+            print("Usage: untar.gz <source> <destination>")
+            return
+        source_path = sys.argv[2]
+        destination_path = sys.argv[3]
+        extract_tar_gz(source_path, destination_path)
     elif command == "help":
         display_help()
     else:
