@@ -39,21 +39,25 @@ def create_empty_file(path, file_name):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-def delete_item(path):
-    """Deletes a file or an empty directory at the specified path."""
+def delete_item(path, recursive=False):
+    """Deletes a file or a directory. Can delete non-empty directories if recursive is True."""
     try:
         if os.path.isfile(path):
             os.remove(path)
             print(f"File '{path}' deleted successfully.")
         elif os.path.isdir(path):
-            os.rmdir(path)
-            print(f"Empty directory '{path}' deleted successfully.")
+            if recursive:
+                shutil.rmtree(path)
+                print(f"Directory '{path}' and its contents deleted successfully (recursively).")
+            else:
+                os.rmdir(path)
+                print(f"Empty directory '{path}' deleted successfully.")
         else:
-            print(f"Error: '{path}' is neither a file nor an empty directory.")
+            print(f"Error: '{path}' is neither a file nor a directory.")
     except FileNotFoundError:
         print(f"Error: '{path}' not found.")
     except OSError as e:
-        print(f"Error deleting '{path}': {e}. Make sure the directory is empty if you are trying to delete a folder.")
+        print(f"Error deleting '{path}': {e}. Make sure the directory is empty or use -r for recursive deletion.")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
@@ -128,6 +132,7 @@ def display_help():
     print("  mkdir <path> <name> - Create a new folder.")
     print("  touch <path> <name> - Create a new empty file.")
     print("  rm <path>          - Delete a file or an empty directory.")
+    print("  rm -r <path>       - Recursively delete a directory and its contents.")
     print("  mv <old_path> <new_path> - Rename or move a file or directory.")
     print("  cat <path>         - Display the content of a file.")
     print("  find <directory> <search_term> - Search for files by name in a directory.")
@@ -163,7 +168,10 @@ def main():
             print("Usage: rm <path>")
             return
         path = sys.argv[2]
-        delete_item(path)
+        if len(sys.argv) > 3 and sys.argv[2] == "-r":
+            delete_item(sys.argv[3], recursive=True)
+        else:
+            delete_item(path)
     elif command == "mv":
         if len(sys.argv) < 4:
             print("Usage: mv <old_path> <new_path>")
