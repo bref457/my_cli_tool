@@ -148,6 +148,29 @@ def change_permissions(path, mode_str):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def zip_item(source_path, output_filename):
+    """Compresses a file or directory into a zip archive."""
+    try:
+        base_name = os.path.basename(output_filename)
+        archive_name = shutil.make_archive(os.path.join(os.path.dirname(output_filename), base_name.split('.')[0]), 'zip', root_dir=os.path.dirname(source_path), base_dir=os.path.basename(source_path))
+        print(f"'{source_path}' compressed to '{archive_name}'.")
+    except FileNotFoundError:
+        print(f"Error: Source '{source_path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def unzip_item(source_path, destination_path):
+    """Decompresses a zip archive."""
+    try:
+        shutil.unpack_archive(source_path, destination_path, 'zip')
+        print(f"'{source_path}' decompressed to '{destination_path}'.")
+    except FileNotFoundError:
+        print(f"Error: Archive '{source_path}' not found.")
+    except shutil.ReadError:
+        print(f"Error: '{source_path}' is not a valid zip archive.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -164,6 +187,8 @@ def display_help():
     print("  cp <source> <destination> - Copy a file or directory.")
     print("  echo [-a] <path> <content> - Write content to a file. Use -a to append.")
     print("  chmod <path> <mode> - Change permissions of a file or directory (e.g., 755).")
+    print("  zip <source> <output_filename> - Compress a file or directory into a zip archive.")
+    print("  unzip <source> <destination> - Decompress a zip archive.")
     print("  help               - Display this help message.")
 
 def main():
@@ -250,6 +275,20 @@ def main():
         path = sys.argv[2]
         mode_str = sys.argv[3]
         change_permissions(path, mode_str)
+    elif command == "zip":
+        if len(sys.argv) < 4:
+            print("Usage: zip <source> <output_filename>")
+            return
+        source_path = sys.argv[2]
+        output_filename = sys.argv[3]
+        zip_item(source_path, output_filename)
+    elif command == "unzip":
+        if len(sys.argv) < 4:
+            print("Usage: unzip <source> <destination>")
+            return
+        source_path = sys.argv[2]
+        destination_path = sys.argv[3]
+        unzip_item(source_path, destination_path)
     elif command == "help":
         display_help()
     else:
