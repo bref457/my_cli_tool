@@ -135,6 +135,19 @@ def edit_file_content(path, content, append=False):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def change_permissions(path, mode_str):
+    """Changes the permissions of a file or directory."""
+    try:
+        mode = int(mode_str, 8) # Convert octal string to integer
+        os.chmod(path, mode)
+        print(f"Permissions of '{path}' changed to {mode_str}.")
+    except FileNotFoundError:
+        print(f"Error: '{path}' not found.")
+    except ValueError:
+        print(f"Error: Invalid mode '{mode_str}'. Please use an octal number (e.g., 755).")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -150,6 +163,7 @@ def display_help():
     print("  find <directory> <search_term> - Search for files by name in a directory.")
     print("  cp <source> <destination> - Copy a file or directory.")
     print("  echo [-a] <path> <content> - Write content to a file. Use -a to append.")
+    print("  chmod <path> <mode> - Change permissions of a file or directory (e.g., 755).")
     print("  help               - Display this help message.")
 
 def main():
@@ -229,6 +243,13 @@ def main():
         path = sys.argv[start_index]
         content = sys.argv[start_index + 1]
         edit_file_content(path, content, append_mode)
+    elif command == "chmod":
+        if len(sys.argv) < 4:
+            print("Usage: chmod <path> <mode>")
+            return
+        path = sys.argv[2]
+        mode_str = sys.argv[3]
+        change_permissions(path, mode_str)
     elif command == "help":
         display_help()
     else:
