@@ -6,6 +6,7 @@ import re
 import hashlib
 import psutil
 import subprocess
+import time
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -347,7 +348,38 @@ def display_sysinfo():
     print(f"Bytes Received: {net_io.bytes_recv / (1024**2):.2f} MB")
     print("--------------------------")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def tail_file(path, lines=10, follow=False):
+    """Displays the last N lines of a file, and optionally follows new lines."""
+    try:
+        with open(path, 'r') as f:
+            # Read last N lines
+            f.seek(0, os.SEEK_END)
+            fsize = f.tell()
+            f.seek(max(fsize - 1024 * lines, 0), os.SEEK_SET) # Go back ~N lines
+            
+            # Read and print lines from this point
+            lines_read = f.readlines()
+            for line in lines_read[-lines:]:
+                sys.stdout.write(line)
+
+            if follow:
+                print(f"\n--- Following new lines in '{path}' (Press Ctrl+C to stop) ---")
+                while True:
+                    line = f.readline()
+                    if not line:
+                        time.sleep(0.1) # Sleep briefly
+                        continue
+                    sys.stdout.write(line)
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
+
     """Displays the help message."""
     print("Simple CLI File Manager")
     print("Usage: python main.py <command> [arguments]")
@@ -373,6 +405,7 @@ def display_help():
     print("  ps                 - List running processes.")
     print("  ping <host>        - Ping a host (e.g., google.com or 8.8.8.8).")
     print("  sysinfo            - Display detailed system information.")
+    print("  tail [-f] [-n <lines>] <path> - Display the last lines of a file, optionally follow new lines.")
     print("  help               - Display this help message.")
 
 def main():
@@ -516,6 +549,35 @@ def main():
         ping_host(host)
     elif command == "sysinfo":
         display_sysinfo()
+    elif command == "tail":
+        if len(sys.argv) < 3:
+            print("Usage: tail [-f] [-n <lines>] <path>")
+            return
+        
+        follow_mode = False
+        num_lines = 10
+        path_index = 2
+
+        # Parse options
+        if "-f" in sys.argv:
+            follow_mode = True
+            path_index = sys.argv.index("-f") + 1
+        
+        if "-n" in sys.argv:
+            try:
+                n_index = sys.argv.index("-n")
+                num_lines = int(sys.argv[n_index + 1])
+                path_index = max(path_index, n_index + 2)
+            except (ValueError, IndexError):
+                print("Error: Invalid number of lines for -n.")
+                return
+
+        if len(sys.argv) < path_index + 1:
+            print("Usage: tail [-f] [-n <lines>] <path>")
+            return
+        
+        path = sys.argv[path_index]
+        tail_file(path, lines=num_lines, follow=follow_mode)
     elif command == "help":
         display_help()
     else:
