@@ -25,6 +25,16 @@ Ein einfaches Kommandozeilen-Tool zur Dateiverwaltung.
     python main.py create_file my_new_file.txt
     ```
 
+## Warum dieses Tool?
+
+Dieses `my_cli_tool` dient als praktisches Lernprojekt, um die Grundlagen der Kommandozeilen-Tool-Entwicklung in Python zu verstehen. Während viele der Funktionen auch direkt über die Standardbefehle deines Betriebssystems im Terminal verfügbar sind, bietet dieses Tool eine Plattform für:
+
+*   **Lernen und Experimentieren:** Verstehen, wie CLI-Anwendungen aufgebaut sind und mit dem Dateisystem interagieren.
+*   **Plattformübergreifende Konsistenz:** Potenzial für einheitliche Befehle über verschiedene Betriebssysteme hinweg.
+*   **Anpassung und Automatisierung:** Die Möglichkeit, maßgeschneiderte Funktionen für spezifische Aufgaben zu entwickeln und komplexe Arbeitsabläufe zu automatisieren, die über Standardbefehle hinausgehen.
+
+Es ist nicht primär dazu gedacht, bestehende Terminalbefehle zu ersetzen, sondern als Basis für die Entwicklung spezialisierterer und automatisierter Dateiverwaltungsaufgaben.
+
 ## Geplante Funktionen
 
 *   Dateien/Ordner löschen
