@@ -56,6 +56,18 @@ def delete_item(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def rename_item(old_path, new_path):
+    """Renames or moves a file or directory."""
+    try:
+        os.rename(old_path, new_path)
+        print(f"'{old_path}' successfully renamed/moved to '{new_path}'.")
+    except FileNotFoundError:
+        print(f"Error: '{old_path}' not found.")
+    except FileExistsError:
+        print(f"Error: '{new_path}' already exists.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -65,6 +77,7 @@ def display_help():
     print("  mkdir <path> <name> - Create a new folder.")
     print("  touch <path> <name> - Create a new empty file.")
     print("  rm <path>          - Delete a file or an empty directory.")
+    print("  mv <old_path> <new_path> - Rename or move a file or directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -97,6 +110,13 @@ def main():
             return
         path = sys.argv[2]
         delete_item(path)
+    elif command == "mv":
+        if len(sys.argv) < 4:
+            print("Usage: mv <old_path> <new_path>")
+            return
+        old_path = sys.argv[2]
+        new_path = sys.argv[3]
+        rename_item(old_path, new_path)
     elif command == "help":
         display_help()
     else:
