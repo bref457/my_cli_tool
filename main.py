@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -100,6 +101,24 @@ def find_files(directory, search_term):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def copy_item(source_path, destination_path):
+    """Copies a file or a directory."""
+    try:
+        if os.path.isfile(source_path):
+            shutil.copy2(source_path, destination_path)
+            print(f"File '{source_path}' copied to '{destination_path}'.")
+        elif os.path.isdir(source_path):
+            shutil.copytree(source_path, destination_path)
+            print(f"Directory '{source_path}' copied to '{destination_path}'.")
+        else:
+            print(f"Error: '{source_path}' is neither a file nor a directory.")
+    except FileNotFoundError:
+        print(f"Error: Source '{source_path}' not found.")
+    except FileExistsError:
+        print(f"Error: Destination '{destination_path}' already exists. Cannot copy to an existing directory.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -112,6 +131,7 @@ def display_help():
     print("  mv <old_path> <new_path> - Rename or move a file or directory.")
     print("  cat <path>         - Display the content of a file.")
     print("  find <directory> <search_term> - Search for files by name in a directory.")
+    print("  cp <source> <destination> - Copy a file or directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -164,6 +184,13 @@ def main():
         directory = sys.argv[2]
         search_term = sys.argv[3]
         find_files(directory, search_term)
+    elif command == "cp":
+        if len(sys.argv) < 4:
+            print("Usage: cp <source> <destination>")
+            return
+        source_path = sys.argv[2]
+        destination_path = sys.argv[3]
+        copy_item(source_path, destination_path)
     elif command == "help":
         display_help()
     else:
