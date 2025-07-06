@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import difflib
+import re
 
 def list_directory_contents(path):
     """Lists the contents of a given directory."""
@@ -234,6 +235,21 @@ def display_metadata(path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def grep_file_content(path, pattern):
+    """Searches for a pattern within the content of a file."""
+    try:
+        with open(path, 'r') as f:
+            for line_num, line in enumerate(f, 1):
+                if re.search(pattern, line):
+                    print(f"{path}:{line_num}: {line.strip()}")
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -255,6 +271,7 @@ def display_help():
     print("  du <path>          - Display the size of a file or directory.")
     print("  diff <file1> <file2> - Compare two text files.")
     print("  stat <path>        - Display metadata of a file or directory.")
+    print("  grep <path> <pattern> - Search for a pattern within the content of a file.")
     print("  help               - Display this help message.")
 
 def main():
@@ -374,6 +391,13 @@ def main():
             return
         path = sys.argv[2]
         display_metadata(path)
+    elif command == "grep":
+        if len(sys.argv) < 4:
+            print("Usage: grep <path> <pattern>")
+            return
+        path = sys.argv[2]
+        pattern = sys.argv[3]
+        grep_file_content(path, pattern)
     elif command == "help":
         display_help()
     else:
