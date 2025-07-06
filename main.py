@@ -171,6 +171,30 @@ def unzip_item(source_path, destination_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def display_size(path):
+    """Displays the size of a file or a directory."""
+    try:
+        if os.path.isfile(path):
+            size = os.path.getsize(path)
+            print(f"Size of '{path}': {size} bytes")
+        elif os.path.isdir(path):
+            total_size = 0
+            for dirpath, dirnames, filenames in os.walk(path):
+                for f in filenames:
+                    fp = os.path.join(dirpath, f)
+                    if not os.path.islink(fp):
+                        total_size += os.path.getsize(fp)
+            print(f"Size of directory '{path}': {total_size} bytes")
+        else:
+            print(f"Error: '{path}' not found or is not a file or directory.")
+    except FileNotFoundError:
+        print(f"Error: '{path}' not found.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 def display_help():
     """Displays the help message."""
     print("Simple CLI File Manager")
@@ -189,6 +213,7 @@ def display_help():
     print("  chmod <path> <mode> - Change permissions of a file or directory (e.g., 755).")
     print("  zip <source> <output_filename> - Compress a file or directory into a zip archive.")
     print("  unzip <source> <destination> - Decompress a zip archive.")
+    print("  du <path>          - Display the size of a file or directory.")
     print("  help               - Display this help message.")
 
 def main():
@@ -289,6 +314,12 @@ def main():
         source_path = sys.argv[2]
         destination_path = sys.argv[3]
         unzip_item(source_path, destination_path)
+    elif command == "du":
+        if len(sys.argv) < 3:
+            print("Usage: du <path>")
+            return
+        path = sys.argv[2]
+        display_size(path)
     elif command == "help":
         display_help()
     else:
